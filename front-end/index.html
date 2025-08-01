@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Speech Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button, select {
+            padding: 10px 15px;
+            margin: 5px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #fileInput {
+            margin: 10px 0;
+        }
+        #audioPlayer {
+            width: 100%;
+            margin-top: 20px;
+        }
+        #textDisplay {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text-to-Speech Converter</h1>
+        
+        <!-- Text Input -->
+        <textarea id="textInput" placeholder="Type your text here..."></textarea>
+        
+        <!-- File Upload -->
+        <input type="file" id="fileInput" accept=".txt">
+        <button onclick="readFile()">Upload TXT File</button>
+        
+        <!-- Tone Selection -->
+        <select id="tone">
+            <option value="1">Neutral</option>
+            <option value="0.5">Suspenseful (Slow)</option>
+            <option value="2">Energetic (Fast)</option>
+        </select>
+        
+        <!-- Generate Button -->
+        <button onclick="generateSpeech()">Convert to Speech</button>
+        
+        <!-- Audio Player -->
+        <audio id="audioPlayer" controls></audio>
+        
+        <!-- Download Button (Hidden by Default) -->
+        <button id="downloadBtn" style="display: none;" onclick="downloadAudio()">Download MP3</button>
+        
+        <!-- Display Text -->
+        <div id="textDisplay"></div>
+    </div>
+
+    <script>
+        // Read .txt file and populate textarea
+        function readFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                document.getElementById('textInput').value = text;
+                document.getElementById('textDisplay').innerText = text;
+            };
+            reader.readAsText(file);
+        }
+
+        // Generate speech using Web Speech API (browser-based)
+        function generateSpeech() {
+            const text = document.getElementById('textInput').value;
+            const tone = parseFloat(document.getElementById('tone').value);
+            
+            if (!text) {
+                alert("Please enter text or upload a file!");
+                return;
+            }
+
+            // Display the text
+            document.getElementById('textDisplay').innerText = text;
+
+            // Use browser's SpeechSynthesis API
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = tone; // Speed control (0.5=slow, 1=normal, 2=fast)
+            
+            // Play audio
+            window.speechSynthesis.speak(utterance);
+            
+            // Show download button (simulated - for demo)
+            document.getElementById('downloadBtn').style.display = 'block';
+        }
+
+        // Simulate MP3 download (for demo - real apps need a backend)
+        function downloadAudio() {
+            alert("In a real app, this would download the MP3. Use IBM Watson or gTTS backend for actual conversion.");
+        }
+    </script>
+</body>
+</html>
